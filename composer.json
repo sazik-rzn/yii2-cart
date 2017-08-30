@@ -1,0 +1,26 @@
+{
+    "name": "sazik-rzn/yii2-cart",
+    "description": "Shop/Order cart module for Yii2 ",
+    "keywords": ["yii2", "shop", "component", "sazik", "sale", "product", "cart", "shopping", "shop"],
+    "homepage": "https://github.com/sazik-rzn/yii2-shop",
+    "type": "yii2-extension",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Vladimir Sazonov",
+            "email": "sazik.rzn@gmail.com",
+            "homepage": "http://szn-development.ru/"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": ">=2.0.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "sazik\\cart\\": ""
+        }
+    },
+    "extra": {
+        "bootstrap": "sazik\\cart\\Bootstrap"
+    }
+}
