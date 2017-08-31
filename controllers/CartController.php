@@ -48,48 +48,18 @@ class CartController extends \yii\base\Controller {
         return json_encode($response);
     }
 
-    private function getRendered($params = []){
-        $result = [
-            'warnings' => [],
-            'result' => []
-        ];
-        if (isset($params['cart'])) {
-            $cart = \sazik\cart\Models\Cart::find()->andWhere(['id' => $params['cart'], 'user' => $this->user])->one();
-            if ($cart) {
-                if(isset($params['positionClass'])){
-                    
-                }
-                else{
-                    $result['warnings'][] = 'param cart is not setted';
-                }
-                foreach ($cart->positions as $position) {
-                    $result['result'][] = ['position' => $position->position, 'count' => $position->count];
-                }
-            } else {
-                $result['warnings'][] = "cart with ID {$params['cart']} is not exists for user {$this->user}";
-            }
-        } else {
-            $result['warnings'][] = 'param cart is not setted';
-        }
-        return $result;
-    }
-    
     private function getCart($params = []) {
         $result = [
             'warnings' => [],
             'result' => []
         ];
-        if (isset($params['cart'])) {
-            $cart = \sazik\cart\Models\Cart::find()->andWhere(['id' => $params['cart'], 'user' => $this->user])->one();
-            if ($cart) {
-                foreach ($cart->positions as $position) {
-                    $result['result'][] = ['position' => $position->position, 'count' => $position->count];
-                }
-            } else {
-                $result['warnings'][] = "cart with ID {$params['cart']} is not exists for user {$this->user}";
+        $cart = \sazik\cart\Models\Cart::getCartByUser($this->user);
+        if ($cart) {
+            foreach ($cart->positions as $position) {
+                $result['result'][] = ['position' => $position->position, 'count' => $position->count];
             }
         } else {
-            $result['warnings'][] = 'param cart is not setted';
+            $result['warnings'][] = "cart is not exists for user {$this->user}";
         }
         return $result;
     }
@@ -99,23 +69,19 @@ class CartController extends \yii\base\Controller {
             'warnings' => [],
             'result' => []
         ];
-        if (isset($params['cart'])) {
-            $cart = \sazik\cart\Models\Cart::find()->andWhere(['id' => $params['cart'], 'user' => $this->user])->one();
-            if ($cart) {
-                if (isset($params['position'])) {
-                    if (isset($params['count'])) {
-                        $result['result'][] = $cart->recountPosition($params['position'], $params['count']);
-                    } else {
-                        $result['warnings'][] = 'param count is not setted';
-                    }
+        $cart = \sazik\cart\Models\Cart::getCartByUser($this->user);
+        if ($cart) {
+            if (isset($params['position'])) {
+                if (isset($params['count'])) {
+                    $result['result'][] = $cart->recountPosition($params['position'], $params['count']);
                 } else {
-                    $result['warnings'][] = 'param position is not setted';
+                    $result['warnings'][] = 'param count is not setted';
                 }
             } else {
-                $result['warnings'][] = "cart with ID {$params['cart']} is not exists for user {$this->user}";
+                $result['warnings'][] = 'param position is not setted';
             }
         } else {
-            $result['warnings'][] = 'param cart is not setted';
+            $result['warnings'][] = "cart is not exists for user {$this->user}";
         }
         return $result;
     }
@@ -125,25 +91,38 @@ class CartController extends \yii\base\Controller {
             'warnings' => [],
             'result' => []
         ];
-        if (isset($params['cart'])) {
-            $cart = \sazik\cart\Models\Cart::find()->andWhere(['id' => $params['cart'], 'user' => $this->user])->one();
-            if ($cart) {
-                if (isset($params['position'])) {
-                    $result['result'][] = $cart->removePosition($params['position']);
-                } else {
-                    $result['warnings'][] = 'param position is not setted';
-                }
+        $cart = \sazik\cart\Models\Cart::getCartByUser($this->user);
+        if ($cart) {
+            if (isset($params['position'])) {
+                $result['result'][] = $cart->removePosition($params['position']);
             } else {
-                $result['warnings'][] = "cart with ID {$params['cart']} is not exists for user {$this->user}";
+                $result['warnings'][] = 'param position is not setted';
             }
         } else {
-            $result['warnings'][] = 'param cart is not setted';
+            $result['warnings'][] = "cart is not exists for user {$this->user}";
         }
         return $result;
     }
 
     private function addPosition($params = []) {
-        
+        $result = [
+            'warnings' => [],
+            'result' => []
+        ];
+        $cart = \sazik\cart\Models\Cart::getCartByUser($this->user, true);
+        if (isset($params['position'])) {
+            if (isset($params['count'])) {
+                $result['result'][] = $cart->addPosition($params['position'], $params['count']);
+                if ($cart->isNewRecord && $cart->save()) {
+                    $result['warnings'][] = "new cart created";
+                }
+            } else {
+                $result['warnings'][] = 'param count is not setted';
+            }
+        } else {
+            $result['warnings'][] = 'param position is not setted';
+        }
+        return $result;
     }
 
     private function delete($params = []) {
@@ -151,15 +130,11 @@ class CartController extends \yii\base\Controller {
             'warnings' => [],
             'result' => []
         ];
-        if (isset($params['cart'])) {
-            $cart = \sazik\cart\Models\Cart::find()->andWhere(['id' => $params['cart'], 'user' => $this->user])->one();
-            if ($cart) {
-                $result['result'][] = $cart->delete();
-            } else {
-                $result['warnings'][] = "cart with ID {$params['cart']} is not exists for user {$this->user}";
-            }
+        $cart = \sazik\cart\Models\Cart::getCartByUser($this->user);
+        if ($cart) {
+            $result['result'][] = $cart->delete();
         } else {
-            $result['warnings'][] = 'param cart is not setted';
+            $result['warnings'][] = "cart is not exists for user {$this->user}";
         }
         return $result;
     }

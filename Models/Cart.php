@@ -84,6 +84,15 @@ class Cart extends \yii\db\ActiveRecord {
         return $enable;
     }
 
+    public static function getCartByUser($user, $createIfNotExists = false) {
+        $cart = self::find()->andWhere(['user' => $user, 'closed' => 0])->one();
+        if (!$cart && $createIfNotExists) {
+            $cart = new Cart;
+            $cart->user = $user;
+        }
+        return $cart;
+    }
+
     public function delete() {
         $enable = true;
         foreach ($this->positions as $position) {
