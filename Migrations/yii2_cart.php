@@ -1,0 +1,32 @@
+<?php
+
+use yii\db\Migration;
+
+class yii2_cart extends Migration {
+
+    public function up() {
+        $options = 'ENGINE=InnoDB CHARSET=utf8';
+        $tables = [
+            'yii2_cart_cart' => [
+                'id' => $this->primaryKey(),
+                'user' => $this->integer()->notNull(),
+                'closed' => $this->integer()->defaultValue(0)->notNull()
+            ],
+            'yii2_cart_positions'=>[
+                'cart_id'=>  $this->integer()->notNull(),
+                'position' => $this->integer()->notNull(),
+                'count'=>  $this->integer()->notNull(),
+            ],            
+        ];
+        foreach ($tables as $table => $columns) {
+            $this->createTable($table, $columns, $options);
+        }
+    }
+
+    public function down() {
+        echo "yii2_cart cannot be reverted.\n";
+
+        return false;
+    }
+
+}
