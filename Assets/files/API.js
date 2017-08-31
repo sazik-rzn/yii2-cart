@@ -2,7 +2,10 @@ var Yii2Cart = {
     API: {
         init: function (user, apiRoute) {
             this.user = user;
-            this.apiRoute = apiRoute;
+            this.apiRoute = '/cart';
+            if(apiRoute!==undefined){
+                this.apiRoute = apiRoute;
+            }
         },
         createRequestObject: function () {
             return {
