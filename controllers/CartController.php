@@ -113,9 +113,6 @@ class CartController extends \yii\base\Controller {
         if (isset($params['position'])) {
             if (isset($params['count'])) {
                 $result['result'][] = $cart->addPosition($params['position'], $params['count']);
-                if ($cart->isNewRecord && $cart->save()) {
-                    $result['warnings'][] = "new cart created";
-                }
             } else {
                 $result['warnings'][] = 'param count is not setted';
             }

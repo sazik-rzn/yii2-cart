@@ -56,6 +56,7 @@ class Cart extends \yii\db\ActiveRecord {
         if (!$cart && $createIfNotExists) {
             $cart = new Cart;
             $cart->user = $user;
+            $cart->save();
         }
         return $cart;
     }
