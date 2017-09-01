@@ -26,10 +26,16 @@ class Cart extends \yii\db\ActiveRecord {
     }
 
     public function addPosition($position, $count) {
-        $positionModel = new Position;
-        $positionModel->cart_id = $this->id;
-        $positionModel->position = $position;
-        $positionModel->count = $count;
+        $positionModel = Position::find()->andWhere(['position' => $position, 'cart_id' => $this->id])->one();
+        if ($positionModel) {
+            $positionModel->count += $count;
+        } else {
+            $positionModel = new Position;
+            $positionModel->cart_id = $this->id;
+            $positionModel->position = $position;
+            $positionModel->count = $count;
+        }
+
         return $positionModel->save();
     }
 
