@@ -26,71 +26,6 @@ var Yii2Cart = {
                 }
             };
         },
-        createResponseObject: function (responseString) {
-            return {
-                void: undefined,
-                user: undefined,
-                params: undefined,
-                result: undefined,
-                warnings: undefined,
-                subresponse: function (data) {
-                    return {
-                        warnings: undefined,
-                        result: undefined,
-                        init: function (_data) {
-                            var enabled = true;
-                            if (data.warnings !== undefined) {
-                                this.warnings = data.warnings;
-                            } else {
-                                enabled = false;
-                            }
-                            if (data.result !== undefined) {
-                                this.result = data.result;
-                            } else {
-                                enabled = false;
-                            }
-                            if (enabled) {
-                                return this;
-                            }
-                            return false;
-                        }
-                    };
-                },
-                init: function (_response, noparam) {
-                    var enabled = true;
-                    if (_response.void !== undefined) {
-                        this.void = _response.void;
-                    } else {
-                        enabled = false;
-                    }
-                    if (_response.user !== undefined) {
-                        this.user = _response.user;
-                    } else {
-                        enabled = false;
-                    }
-                    if (_response.params !== undefined || noparam !== undefined) {
-                        this.params = _response.params;
-                    } else {
-                        enabled = false;
-                    }
-                    if (_response.result !== undefined && $.isPlainObject(_response.result)) {
-                        this.result = this.subresponse().init(_response.result);
-                    } else {
-                        enabled = false;
-                    }
-                    if (!this.result) {
-                        enabled = false;
-                    }
-                    console.log({data: _response, response: this});
-                    if (enabled) {
-                        return this;
-                    }
-
-                    return false;
-                }
-            };
-            return response.init(JSON.parse(responseString));
-        },
         methods: {
             getCart: function (callback) {
                 var request = Yii2Cart.API
@@ -98,7 +33,7 @@ var Yii2Cart = {
                         .setUser(Yii2Cart.API.user)
                         .setVoid('getCart');
                 $.post(Yii2Cart.API.apiRoute, {json: JSON.stringify(request)}).done(function (data) {
-                    return callback(Yii2Cart.API.createResponseObject().init(data, true));
+                    return callback(data);
                 });
             },
             addPosition: function (position, count, callback) {
@@ -109,7 +44,7 @@ var Yii2Cart = {
                         .addParam('position', position)
                         .addParam('count', count);
                 $.post(Yii2Cart.API.apiRoute, {json: JSON.stringify(request)}).done(function (data) {
-                    return callback(Yii2Cart.API.createResponseObject().init(data));
+                    return callback(data);
                 });
             },
             recountPosition: function (position, count, callback) {
@@ -120,7 +55,7 @@ var Yii2Cart = {
                         .addParam('position', position)
                         .addParam('count', count);
                 $.post(Yii2Cart.API.apiRoute, {json: JSON.stringify(request)}).done(function (data) {
-                    return callback(Yii2Cart.API.createResponseObject().init(data));
+                    return callback(data);
                 });
             },
             removePosition: function (position, callback) {
@@ -130,7 +65,7 @@ var Yii2Cart = {
                         .setVoid('removePosition')
                         .addParam('position', position);
                 $.post(Yii2Cart.API.apiRoute, {json: JSON.stringify(request)}).done(function (data) {
-                    return callback(Yii2Cart.API.createResponseObject().init(data));
+                    return callback(data);
                 });
             },
             delete: function (callback) {
@@ -139,7 +74,7 @@ var Yii2Cart = {
                         .setUser(Yii2Cart.API.user)
                         .setVoid('remove');
                 $.post(Yii2Cart.API.apiRoute, {json: JSON.stringify(request)}).done(function (data) {
-                    return callback(Yii2Cart.API.createResponseObject().init(data, true));
+                    return callback(data);
                 });
             }
         }
