@@ -9,8 +9,7 @@ class yii2_cart extends Migration {
         $tables = [
             'yii2_cart_cart' => [
                 'id' => $this->primaryKey(),
-                'user' => $this->integer()->notNull(),
-                'closed' => $this->integer()->defaultValue(0)->notNull()
+                'user' => $this->integer()->notNull()
             ],
             'yii2_cart_positions'=>[
                 'cart_id'=>  $this->integer()->notNull(),

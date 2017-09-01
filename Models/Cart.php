@@ -7,7 +7,6 @@ use Yii;
 /**
  * @property integer $id 
  * @property integer $user 
- * @property integer $closed 
  */
 class Cart extends \yii\db\ActiveRecord {
 
@@ -18,8 +17,7 @@ class Cart extends \yii\db\ActiveRecord {
     public function rules() {
         return [
             [['user'], 'required'],
-            [['user', 'closed'], 'integer'],
-            ['closed', 'default', 'value' => 0],
+            [['user'], 'integer'],
         ];
     }
 
@@ -53,39 +51,8 @@ class Cart extends \yii\db\ActiveRecord {
         return false;
     }
 
-    public function close() {
-        $enable = true;
-        $closed = [];
-        foreach ($this->positions as $position) {
-            if (!$position->canClose()) {
-                $enable = false;
-                break;
-            }
-        }
-        if ($enable) {
-            foreach ($this->positions as $position) {
-                if ($position->onClose()) {
-                    $closed[] = $position;
-                } else {
-                    $enable = false;
-                    break;
-                }
-            }
-        }
-        if ($enable) {
-            $this->closed = 1;
-        }
-        if (!$enable || !$this->save()) {
-            $enable = false;
-            foreach ($closed as $position) {
-                $position->unClose();
-            }
-        }
-        return $enable;
-    }
-
     public static function getCartByUser($user, $createIfNotExists = false) {
-        $cart = self::find()->andWhere(['user' => $user, 'closed' => 0])->one();
+        $cart = self::find()->andWhere(['user' => $user])->one();
         if (!$cart && $createIfNotExists) {
             $cart = new Cart;
             $cart->user = $user;
