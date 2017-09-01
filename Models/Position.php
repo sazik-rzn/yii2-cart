@@ -30,5 +30,9 @@ class Position extends \yii\db\ActiveRecord {
         $this->count = $count;
         return $this->save();
     }
+    
+    public static function primaryKey() {
+        return ['cart_id', 'position'];
+    }
 
 }
