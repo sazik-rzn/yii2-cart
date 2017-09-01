@@ -2,8 +2,8 @@
 
 use yii\db\Migration;
 
-class m01092017_114800_yii2_cart extends Migration {
-
+class m170901_085714_yii2_cart extends Migration
+{
     public function up() {
         $options = 'ENGINE=InnoDB CHARSET=utf8';
         $tables = [
@@ -22,10 +22,11 @@ class m01092017_114800_yii2_cart extends Migration {
         }
     }
 
-    public function down() {
-        echo "m01092017_114800_yii2_cart cannot be reverted.\n";
+
+    public function down()
+    {
+        echo "m170901_085714_yii2_cart cannot be reverted.\n";
 
         return false;
     }
-
 }
