@@ -72,7 +72,7 @@ var Yii2Cart = {
                 var request = Yii2Cart.API
                         .createRequestObject()
                         .setUser(Yii2Cart.API.user)
-                        .setVoid('remove');
+                        .setVoid('delete');
                 $.post(Yii2Cart.API.apiRoute, {json: JSON.stringify(request)}).done(function (data) {
                     return callback(data);
                 });
